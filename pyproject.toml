@@ -11,6 +11,8 @@ python = "^3.11"
 selenium = "^4.9.0"
 beautifulsoup4 = "^4.12.2"
 webdriver-manager = "^3.8.6"
+langchain = "^0.0.161"
+chromadb = "^0.3.21"
 
 
 [build-system]
