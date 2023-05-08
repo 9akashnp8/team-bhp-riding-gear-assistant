@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from langchain.schema import Document
 
-from .utils.functions import get_page_source
+from utils.functions import get_page_source
 
 class TBHPCommentsLoader():
     """

@@ -1,3 +1,7 @@
+from decouple import config
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.schema import Document
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -20,3 +24,16 @@ def get_page_source(url: str) -> str:
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(url)
     return driver.page_source
+
+def create_embeddings(docs: "list[Document]") -> None:
+    """creates and persists embeddings to db"""
+    embeddings = OpenAIEmbeddings(openai_api_key=config('OPENAI_API_KEY'))
+    db = Chroma.from_documents(docs, embeddings, persist_directory='db')
+    db.persist()
+
+def query_db(query: str, n_results: int = 5) -> list:
+    """query the vector db for similar text content"""
+    embedding = OpenAIEmbeddings(openai_api_key=config('OPENAI_API_KEY'))
+    db = Chroma(persist_directory='db', embedding_function=embedding)
+    results = db.similarity_search(query, k=n_results)
+    return [result.page_content for result in results]
