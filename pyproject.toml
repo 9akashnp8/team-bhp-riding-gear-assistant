@@ -16,6 +16,8 @@ chromadb = "^0.3.21"
 python-decouple = "^3.8"
 openai = "^0.27.6"
 tiktoken = "^0.4.0"
+fastapi = "^0.95.1"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
 
 
 [build-system]
