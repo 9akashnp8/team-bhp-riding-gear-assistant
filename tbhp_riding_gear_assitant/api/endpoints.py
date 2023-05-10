@@ -6,10 +6,10 @@ from core.comments_loader import TBHPCommentsLoader
 from core.prompts import prompt_template
 from utils.functions import create_embeddings, query_db
 
-app = FastAPI()
+router = APIRouter()
 llm = OpenAI()
 
-@app.get('/api/create-embeddings/')
+@router.get('/create-embeddings')
 def generate_embeddings(n_page: int):
     """
     create embeddings of the comments from page 1
@@ -20,7 +20,7 @@ def generate_embeddings(n_page: int):
     create_embeddings(docs=docs)
     return {"message": "embeddings created successfuly"}
 
-@app.post('/api/query/')
+@router.post('/query')
 def ask_query(payload: Query):
     """
     core endpoint that takes query from user, queries
