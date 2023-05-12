@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from langchain.llms import OpenAI
 
 from api.models import Query
@@ -7,7 +7,7 @@ from core.prompts import prompt_template
 from utils.functions import create_embeddings, query_db
 
 router = APIRouter()
-llm = OpenAI()
+llm = OpenAI(max_tokens=-1)
 
 @router.get('/create-embeddings')
 def generate_embeddings(n_page: int):
