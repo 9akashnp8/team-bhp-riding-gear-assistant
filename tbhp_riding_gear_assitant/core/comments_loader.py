@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from langchain.schema import Document
+from langchain.text_splitter import CharacterTextSplitter
 
 from utils.functions import get_page_source
 
@@ -31,7 +32,10 @@ class TBHPCommentsLoader():
         """
         soup = BeautifulSoup(page_source, 'html.parser')
         comments = soup.find_all('td', {'class': 'mod2022-postbit-messagearea'})
-        return [comment.text for comment in comments]
+        page_comment = ""
+        for comment in comments:
+            page_comment += comment.text.strip()
+        return Document(page_content=page_comment)
 
     def get_comment_documents(self, n: int) -> "list[str]":
         """create Document objects for indexing via VectorstoreIndexCreator.
@@ -49,9 +53,7 @@ class TBHPCommentsLoader():
                 f'https://www.team-bhp.com/forum/ride-safe/42000-riding-gear-thread-{i}.html'
             )
             page_comments = self.get_comments_from_page(page_source=page_source)
-            comment_documents = [
-                Document(page_content=comment, metadata={"index": index})
-                for index, comment in enumerate(page_comments)
-            ]
-            docs.extend(comment_documents)
-        return docs
+            docs.append(page_comments)
+        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        documents = text_splitter.split_documents(docs)
+        return documents
